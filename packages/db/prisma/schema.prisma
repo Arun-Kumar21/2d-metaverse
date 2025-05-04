@@ -6,57 +6,56 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  id       String  @id @unique @default(cuid())
   username String  @unique
-  password String  
-  avatarId String? @db.ObjectId
+  password String
+  avatarId String?
   role     Role
-  space    Space[]
-  avatar   Avatar? @relation(fields: [avatarId], references: [id])
+  spaces   Space[]
+  avatar    Avatar? @relation(fields: [avatarId], references: [id])
 }
 
 model Space {
-  id        String         @id  @default(auto()) @map("_id") @db.ObjectId
+  id        String  @id @unique @default(cuid())
   name      String
   width     Int
   height    Int
   thumbnail String?
-  creatorId String         @db.ObjectId
-  creator   User           @relation(fields: [creatorId], references: [id])
-  elements  SpaceElement[]
+  creatorId String
+  creator     User    @relation(fields: [creatorId], references: [id])
+  elements  spaceElements[]
 }
 
-model SpaceElement {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  elementId String  @db.ObjectId
-  spaceId   String  @db.ObjectId
+model spaceElements {
+  id        String @id @unique @default(cuid())
+  elementId String
+  spaceId   String
   x         Int
   y         Int
-  space     Space   @relation(fields: [spaceId], references: [id])
+  space     Space  @relation(fields: [spaceId], references: [id])
   element   Element @relation(fields: [elementId], references: [id])
 }
 
 model Element {
-  id       String         @id  @default(auto()) @map("_id") @db.ObjectId
-  width    Int
-  height   Int
-  static   Boolean
-  imageUrl String
-  spaces   SpaceElement[]
-  mapElements MapElements[]
+  id              String @id @unique @default(cuid())
+  width           Int
+  height          Int
+  static          Boolean
+  imageUrl        String
+  spaces          spaceElements[]
+  mapElements     MapElements[]
 }
 
 model Map {
-  id     String @id  @default(auto()) @map("_id") @db.ObjectId
+  id     String  @id @unique @default(cuid())
   width  Int
   height Int
   name   String
@@ -65,20 +64,20 @@ model Map {
 }
 
 model MapElements {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  mapId     String @db.ObjectId
-  elementId String @db.ObjectId
-  x         Int
-  y         Int
+  id        String  @id @unique @default(cuid())
+  mapId     String
+  elementId String
+  x         Int?
+  y         Int?
   map       Map     @relation(fields: [mapId], references: [id])
   element   Element @relation(fields: [elementId], references: [id])
 }
 
 model Avatar {
-  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  id       String  @id @unique @default(cuid())
   imageUrl String?
-  name    String?
-  users User[]
+  name     String?
+  users    User[]
 }
 
 enum Role {
