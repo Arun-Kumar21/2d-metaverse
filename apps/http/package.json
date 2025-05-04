@@ -11,13 +11,15 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@metaverse/db": "*",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "expressjs": "^1.0.1",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
