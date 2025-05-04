@@ -1,29 +1,31 @@
 import { Request, Response } from 'express';
 
 import client from '@metaverse/db/client';
-import { SignupSchema, SigninSchema } from '../types';
+import { UpdateMetadataSchema } from '../types';
 
 
-export const signup = async(req: Request, res: Response) => {
-  const parsedData = SignupSchema.safeParse(req.body);
+export const updateUserAvatar = async (req: Request, res: Response): Promise<void> => {
+  const parsedData = UpdateMetadataSchema.safeParse(req.body);
   if (!parsedData.success) {
-    return res.status(400).json({message: "Validation failed"})
+    res.status(400).json({ message: 'Validation failed' });
+    return;
   }
 
   try {
-    const user = await client.user.create({
+    await client.user.update({
+      where: {
+        id: req.userId,
+      },
       data: {
-        username: parsedData.data.username,
-        password: parsedData.data.password,
-        role: parsedData.data.type === 'Admin' ? "Admin": "User"
+        avatarId: parsedData.data.avatarId,
       }
     })
 
     res.json({
-      userId: user.id 
+      message: 'User avatar updated successfully',
     })
-
   } catch (error) {
-    res.status(400).json({message: "User already exists"})
+    res.status(400).json({ message: 'Error updating user avatar' });
+    return; 
   }
 }
