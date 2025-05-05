@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-export const userMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const userMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
+    return Promise.reject(new Error("Unauthorized")); 
   }
 
   try {
@@ -14,6 +15,7 @@ export const userMiddleware = (req: Request, res: Response, next: NextFunction) 
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
+    return Promise.reject(new Error("Unauthorized"));
   }
 }
