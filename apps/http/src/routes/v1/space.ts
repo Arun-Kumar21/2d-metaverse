@@ -8,12 +8,13 @@ import {
     getSpaceWithId,
     deleteSpace
 } from '../../controller/space';
+import { userMiddleware } from '../../middleware/user';
 
 export const spaceRouter = express.Router();
 
 spaceRouter.get('/all', getAllSpace);
-spaceRouter.post('/', createSpace);
-spaceRouter.delete('/:spaceId', deleteSpace);
-spaceRouter.get('/:spaceId', getSpaceWithId);
-spaceRouter.post('/element', addElementInSpace);
-spaceRouter.delete('/element', deleteElementFromSpace);
+spaceRouter.post('/', userMiddleware, createSpace);
+spaceRouter.delete('/:spaceId', userMiddleware, deleteSpace);
+spaceRouter.get('/:spaceId', userMiddleware, getSpaceWithId);
+spaceRouter.post('/element', userMiddleware, addElementInSpace);
+spaceRouter.delete('/element', userMiddleware, deleteElementFromSpace);

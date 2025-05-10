@@ -1,5 +1,5 @@
 import express from 'express';
-import e, { Request, Response } from 'express';
+import  { Request, Response } from 'express';
 
 import client from '@metaverse/db/client';
 import { AddElementSchema, CreateSpaceSchema, DeleteElementSchema } from '../types';
