@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@metaverse/db": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.9",
+    "jsonwebtoken": "^9.0.2",
     "ts-node": "^10.9.2",
-    "ws": "^8.18.2",
-    "@metaverse/db": "workspace:*"
+    "ws": "^8.18.2"
   },
   "devDependencies": {
     "@types/ws": "^8.18.1"

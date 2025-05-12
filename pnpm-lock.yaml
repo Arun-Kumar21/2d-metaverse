@@ -115,9 +115,15 @@ importers:
       '@metaverse/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@types/jsonwebtoken':
+        specifier: ^9.0.9
+        version: 9.0.9
       bufferutil:
         specifier: ^4.0.1
         version: 4.0.9
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.15.3)(typescript@5.8.3)
@@ -126,7 +132,7 @@ importers:
         version: 5.0.10
       ws:
         specifier: ^8.18.2
-        version: 8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+        version: 8.18.2
     devDependencies:
       '@types/ws':
         specifier: ^8.18.1
@@ -5927,7 +5933,7 @@ packages:
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  /ws@8.18.2(bufferutil@4.0.9)(utf-8-validate@5.0.10):
+  /ws@8.18.2:
     resolution: {integrity: sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -5938,9 +5944,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dependencies:
-      bufferutil: 4.0.9
-      utf-8-validate: 5.0.10
     dev: false
 
   /yallist@4.0.0:

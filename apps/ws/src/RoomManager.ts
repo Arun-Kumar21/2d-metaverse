@@ -25,6 +25,13 @@ export class RoomManager {
         this.rooms.set(spaceId, [...this.rooms.get(spaceId) ?? [], user]);
     }
 
+    public removeUser (user: User, spaceId: string) {
+        if (!this.rooms.has(spaceId)) {
+            return;
+        }
+        this.rooms.set(spaceId, this.rooms.get(spaceId)?.filter((u) => u.id !== user.id) ?? []);
+    }
+
     public broadcast (message: OutgoingMessage, user: User, roomId: string) {
         if (!this.rooms.has(roomId)){
             return;
