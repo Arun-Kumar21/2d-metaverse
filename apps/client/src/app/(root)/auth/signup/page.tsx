@@ -6,6 +6,8 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import axios from "axios";
+
 import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
@@ -21,9 +23,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import AuthCard from "@/components/auth/auth-card";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const SignupPage = (
 ) => {
+
+  const [loading, setLoading] = React.useState(false);
+
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -32,7 +41,33 @@ const SignupPage = (
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof signupSchema>) => {};
+  const onSubmit = async (data: z.infer<typeof signupSchema>) => {
+    try {
+        setLoading(true);
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/signup`, {
+            username: data.username,
+            password: data.password,
+            type: "User",
+        })
+        if (res.status === 200) {
+            toast.success("Account created successfully, please sign in"); 
+            form.reset();
+            router.push("/auth/signin");
+        }
+    } catch (e) {
+        console.log(e)
+
+        if (axios.isAxiosError(e)) {
+            if (e.response?.status === 400) {
+                toast.error(e.response.data.message);
+            } else {
+                toast.error("Something went wrong");
+            }
+        }
+    } finally {
+        setLoading(false);
+    }
+  };
 
   return (
     <AuthCard className="w-full">
@@ -79,7 +114,7 @@ const SignupPage = (
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" disabled={loading} className="w-full">
               Sign up
             </Button>
             <div className="text-center text-sm">

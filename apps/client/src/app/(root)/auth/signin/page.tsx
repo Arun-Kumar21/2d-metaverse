@@ -8,7 +8,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Form
+  Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -16,10 +16,24 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+import axios from "axios";
+
 import { signinSchema } from "@/schema";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React from "react";
+import toast from "react-hot-toast";
+
+import useAuthStore from "@/store/useAuthStore";
 
 const SigninPage = () => {
+    const router = useRouter();
+
+    const {login} = useAuthStore();
+    
+    const [loading, setLoading] = React.useState(false);
+    
+
   const form = useForm<z.infer<typeof signinSchema>>({
     resolver: zodResolver(signinSchema),
     defaultValues: {
@@ -29,7 +43,47 @@ const SigninPage = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof signinSchema>) => {
-    console.log(data);
+    try {
+        setLoading(true);
+
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/signin`,
+        {
+          username: data.username,
+          password: data.password,
+        }
+      );
+
+      if (res.status === 200) {
+        toast.success("Logged in successfully");
+        login(res.data.token, {
+          id: res.data.user.id,
+          username: res.data.user.username,
+          avatarId: res.data.user?.avatarId,
+        });
+        form.reset();
+        router.push("/");
+      }
+    } catch (e) {
+        if (axios.isAxiosError(e)) {
+            if (e.response?.status === 400 || e.response?.status === 404) {
+                form.setError("username", {
+                    type: "manual",
+                    message: "Invalid username or password",
+                });
+                form.setError("password", {
+                    type: "manual",
+                    message: "Invalid username or password",
+                });
+            }
+            } else {
+                toast.error("Something went wrong");
+            }
+
+        console.error(e);
+    } finally {
+        setLoading(false);
+    }
   };
 
   return (
@@ -39,7 +93,9 @@ const SigninPage = () => {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center text-center">
               <h1 className="text-2xl font-bold">Welcome back</h1>
-              <p className="text-sm text-muted-foreground">Sign in to your account</p>
+              <p className="text-sm text-muted-foreground">
+                Sign in to your account
+              </p>
             </div>
             <FormField
               control={form.control}
@@ -77,7 +133,7 @@ const SigninPage = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" disabled={loading} className="w-full">
               Sign in
             </Button>
             <div className="text-center text-sm">

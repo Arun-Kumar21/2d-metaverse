@@ -15,6 +15,18 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     const hashedPassword = await bcrypt.hash(parsedData.data.password, 10);
 
     try {
+
+        const existingUser = await client.user.findUnique({
+            where: {
+                username: parsedData.data.username,
+            },
+        });
+
+        if (existingUser) {
+            res.status(400).json({ message: "User already exists" });
+            return;
+        }
+
         const user = await client.user.create({
             data: {
                 username: parsedData.data.username,
@@ -27,7 +39,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
             userId: user.id,
         });
     } catch (error) {
-        res.status(400).json({ message: "User already exists" });
+        res.status(500).json({ message: "Internal server error" });
         return;
     }
 };
@@ -47,7 +59,7 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
         });
 
         if (!user) {
-            res.status(400).json({ message: "User not found" });
+            res.status(404).json({ message: "User not found" });
             return;
         }
 
@@ -70,6 +82,10 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
 
         res.json({
             token: token,
+            user: {
+                id: user.id,
+                username: user.username,
+            }
         });
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
