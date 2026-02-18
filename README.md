@@ -1,1 +1,0 @@
-# 2D Metaverse Web App
