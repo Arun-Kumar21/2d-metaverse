@@ -1,21 +1,7 @@
-import { useState } from 'react'
-import './App.css'
+import Game from './game/Game';
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <h1>2D Metaverse</h1>
-      </div>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-    </>
-  )
+  return <Game />;
 }
 
-export default App
+export default App;
